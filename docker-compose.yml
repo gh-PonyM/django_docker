@@ -9,14 +9,11 @@ services:
       context: ./images/django-base
       dockerfile: Dockerfile
     environment:
-      GUNICORN_WORKERS: 2
-      GUNICORN_RELOAD: "true"
       DJANGO_PROJECT: django_docker
-      GUNICORN_LOGLEVEL: "debug"  # debug, info, warning, error, critical
-      GUNICORN_BIND: 0.0.0.0:8000
 
     env_file:
       - ./env_files/mail.env
+      - ./env_files/gunicorn.env
       - ./env_files/postgres.env
       - ./env_files/django_settings.env
 
