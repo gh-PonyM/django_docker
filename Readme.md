@@ -8,7 +8,6 @@ This template is meant to facilitates starting with django/nginx/postgres stack 
 - Live reloading of the app with your source code mounted
 - Easy switching between django projects by changing `DJANGO_PROJECT` environment variable
 - Configuration handling for lauchning gunicorn using `GUNICORN_WORKERS`, `GUNICORN_BIND`, `GUNICORN_DEBUG` and `GUNICORN_LOGLEVEL` by using `start.sh`. The container will stop gracefully with exit code 0 on `SIGTERM`.
-- With the above avoiding read/write permissions problems when executing django managment commands from inside the container with mounted source code if run under user root.
 - environ variables used for different services centrally in `.env` files.  
 - nginx serving static files from docker volumes connected to web service. When launching the webcontainer, static files are collected to the docker-volume automatically.
 
