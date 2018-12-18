@@ -39,3 +39,4 @@ and visit `localhost/admin` on your browser.
 
 - create non-root user in images and handle file permissions elegantly with as gosu
 entrypoint
+- improve django-base Dockerfile to loop over install requirements.
