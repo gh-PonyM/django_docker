@@ -1,29 +1,87 @@
-version: '3'
+version: '3.4'
 
 services:
   web:
+    # user: 1000
     container_name: web
     restart: always
-    build: ./images/django-gunicorn-base
+    build:
+      context: ./images/django-base
+      dockerfile: Dockerfile
     environment:
-      GUNICORN_RELOAD: "true"
-      GUNICORN_LOGLEVEL: "warning"
+      DJANGO_PROJECT: django_docker
+
+    env_file:
+      - ./env_files/mail.env
+      - ./env_files/gunicorn.env
+      - ./env_files/postgres.env
+      - ./env_files/django_settings.env
+
     volumes:
+        # Mount code all for development into the container, django-base image doens't include codebase
+      - "./:/code"
       - "static:/var/www/static"
       - "media:/var/www/media"
-      - "./django_docker:/code"
+    depends_on:
+      - postgres
+    networks:
+      - backend
 
   nginx:
     container_name: nginx
     restart: always
     build: ./images/nginx
+    # These ports are published to localhost
     ports:
-      - "80:80"
+    - "80:80"
     depends_on:
-      - web
+    - web
     volumes:
-      - "static:/var/www/static"
-      - "media:/var/www/media"
+    - "static:/var/www/static"
+    - "media:/var/www/media"
+    - "./config/nginx_proxy:/etc/nginx/conf.d/"
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    # By default, docker gives the container a hostname eq to the container name
+    hostname: postgres
+    env_file:
+      - ./env_files/postgres.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+# redis:
+#   # redis on localhost for django
+#   image: redis:4
+#   networks:
+#     - backend
+#   ports:
+#     - "6379:6379"
+
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: pgadmin
+  #   depends_on:
+  #     - postgres
+  #   # pgadmin reachable localhost:4444
+  #   ports:
+  #     - "4444:80"
+  #   env_file:
+  #     - ./env_files/pgadmin.env
+  #   volumes:
+  #     - pgadmin_config:/var/lib/pgadmin
+  #   networks:
+  #     - backend
+
 volumes:
   static:
   media:
+  pgdata:
+  pgadmin_config:
+
+networks:
+  backend:
