@@ -15,11 +15,6 @@ This template is meant to facilitates starting with django/nginx/postgres stack 
 - Automatic static file collection when web container is launched.
 - mounted `nginx.conf` to make changes without reloading the app.
 
-
-## Before you start
-
-Make sure you have docker and docker-compose installed.
-
 ## Set up this repo
 
 First, build/download and run the stack
