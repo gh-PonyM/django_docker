@@ -2,7 +2,6 @@ version: '3.4'
 
 services:
   web:
-    # user: 1000
     container_name: web
     restart: always
     build:
@@ -10,6 +9,7 @@ services:
       dockerfile: Dockerfile
     environment:
       DJANGO_PROJECT: django_docker
+      LOCAL_USER_ID: 1000
 
     env_file:
       - ./env_files/mail.env
@@ -24,6 +24,7 @@ services:
       - "media:/var/www/media"
     depends_on:
       - postgres
+      - nginx
     networks:
       - backend
 
@@ -31,11 +32,11 @@ services:
     container_name: nginx
     restart: always
     build: ./images/nginx
+    environment:
+      LOCAL_USER_ID: 1000
     # These ports are published to localhost
     ports:
     - "80:80"
-    depends_on:
-    - web
     volumes:
     - "static:/var/www/static"
     - "media:/var/www/media"

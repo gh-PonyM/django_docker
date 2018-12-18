@@ -8,10 +8,13 @@ This template is meant to facilitates starting with django/nginx/postgres stack 
 - Live reloading of the app with your source code mounted
 - Easy switching between django projects by changing `DJANGO_PROJECT` environment variable
 - Configuration handling for lauchning gunicorn using `GUNICORN_WORKERS`, `GUNICORN_BIND`, `GUNICORN_DEBUG` and `GUNICORN_LOGLEVEL` by using `start.sh`. The container will stop gracefully with exit code 0 on `SIGTERM`.
+- Custom entrypoint and start scripts to change default `root` user while graceful shutdown still works.
+- Executing django management commands inside container without file permissions problems.
+- Easy switching between django projects by changing `DJANGO_PROJECT` environment variable only.
 - environ variables used for different services centrally in `.env` files.  
-- nginx serving static files from docker volumes connected to web service. When launching the webcontainer, static files are collected to the docker-volume automatically.
+- Automatic static file collection when web container is launched.
+- mounted `nginx.conf` to make changes without reloading the app.
 
-The django-base image features a user python with UUID 1000.
 
 ## Before you start
 
@@ -23,9 +26,9 @@ First, build/download and run the stack
 
     docker-compose up --build
 
-Open a second command prompt and enter the container:
+Open a second command prompt and enter the container with user UID 1000:
 
-    docker-compose exec web bash
+    docker-compose exec -u 1000 web bash
 
 and run
 
@@ -34,9 +37,3 @@ and run
     python manage.py createsuperuser
 
 and visit `localhost/admin` on your browser.
-
-## Todo
-
-- create non-root user in images and handle file permissions elegantly with as gosu
-entrypoint
-- improve django-base Dockerfile to loop over install requirements.

@@ -5,11 +5,15 @@ LABEL dockerfile_location="" \
       image_name=django-base:latest \
       base_image=python:3.7.0
 
-# Copied from official node image
-RUN groupadd --gid 1000 python \
-  && useradd --uid 1000 --gid python --shell /bin/bash --create-home python
-
 RUN mkdir -p /var/www/static && mkdir -p /var/www/media && mkdir -p /etc/gunicorn && mkdir -p /code
+
+# Install gosu
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y gosu; \
+	rm -rf /var/lib/apt/lists/*; \
+# verify that the binary works
+	gosu nobody true
 
 # add gunicorn config
 COPY *.conf /etc/gunicorn/
@@ -34,5 +38,8 @@ ENV GUNICORN_RELOAD="false"
 
 # Copy start script
 COPY start.sh /
-RUN chmod +x /start.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /start.sh && chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["/start.sh"]
