@@ -10,4 +10,9 @@ echo "Starting with UID : $USER_ID"
 useradd --shell /bin/bash -u $USER_ID -o -c "" -m user
 export HOME=/home/user
 
+echo "changing ownership of static and media directory with UID ${USER_ID}"
+
+chown -R $USER_ID:$USER_ID /var/www/media
+chown -R $USER_ID:$USER_ID /var/www/static
+
 exec gosu user "$@"
