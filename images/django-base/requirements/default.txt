@@ -1,5 +1,5 @@
 # Django==2.1.2   # the app was built using this version
-django ~> 2.1.5
+django
 gunicorn
 psycopg2-binary
 djangorestframework
