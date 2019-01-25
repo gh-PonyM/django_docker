@@ -1,19 +1,18 @@
 # How to setup django_docker
-I assume that docker and docker compose is installed.
+
+It should not be a pony to have the advantages of docker-compose but not been able to develop locally without live reloading or performing simple management commands from the shell....and then eventually run into file permission issues. Also entrypoints and custom start scripts are sometimes tricky because containers might not shutdown gracefully. This stack solved theese issues for me.
 
 # About this starter template
 
 This template is meant to facilitates starting with django/nginx/postgres stack using and docker-compose. The current template is suitable for a webapp also using email notifications. It features:
 
-- Live reloading of the app with your source code mounted
-- Easy switching between django projects by changing `DJANGO_PROJECT` environment variable
-- Configuration handling for lauchning gunicorn using `GUNICORN_WORKERS`, `GUNICORN_BIND`, `GUNICORN_DEBUG` and `GUNICORN_LOGLEVEL` by using `start.sh`. The container will stop gracefully with exit code 0 on `SIGTERM`.
-- Custom entrypoint and start scripts to change default `root` user while graceful shutdown still works.
-- Executing django management commands inside container without file permissions problems.
-- Easy switching between django projects by changing `DJANGO_PROJECT` environment variable only.
+- Live reloading of the app with your source code mounted.
+- Easy switching between django projects by changing `DJANGO_PROJECT` environment variable.
+- Configuration handling for lauchning gunicorn using `GUNICORN_WORKERS`, `GUNICORN_BIND`, `GUNICORN_DEBUG` and `GUNICORN_LOGLEVEL`(see `start.sh`).
+- Containers stop gracefully with exit code 0 on `SIGTERM`.
+- Launch containers with your `LOCAL_USER_ID` (UID) on Mac/Linux.
 - environ variables used for different services centrally in `.env` files.  
-- Automatic static file collection when web container is launched.
-- mounted `nginx.conf` to make changes without reloading the app.
+- mounted `django-docker.conf` to make changes without reloading the app.
 
 ## Set up this repo
 
@@ -31,4 +30,4 @@ and run
     python manage.py migrate
     python manage.py createsuperuser
 
-and visit `localhost/admin` on your browser.
+and visit `localhost/admin` on your browser. That's it!
